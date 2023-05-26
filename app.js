@@ -1,11 +1,13 @@
 //jshint esversion: 6
-
 const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("request");
 const https = require("https");
 
 const app = express();
+
+const apiKey = "2c92688731400b760684e3760efb912b";
+const secretKey = "1370d678a184f319b055b435cb4f0ac0";
 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended:true}));
@@ -20,39 +22,59 @@ app.post("/", function(req, res){
     const email = req.body.email;
 
     let data = {
+        "IsExcludedFromCampaigns": false,
         "Name": firstName + " " + lastName,
         "Email": email 
     };
 
-    // console.log(firstName + ", " + lastName + ", " + email);
-    // console.log("----------");
-    // console.log(data);
     let jsonData = JSON.stringify(data);
-    console.log("----------");
-    console.log(jsonData);
+    // console.log("----------");
+    // console.log(jsonData);
 
-    const url = "https://api.mailjet.com/v3/REST/contact";
+    // const url = "https://api.mailjet.com/v3/REST/contact";
+
+    // const options = {
+    //     method: "POST",
+    //     auth: "daily:2c92688731400b760684e3760efb912b"
+    // };
+    // const request = https.request(url, options, function(response){
+    //     response.on("data", function(data){
+    //         console.log(JSON.parse(data));
+    //     });
+    // });
+    // request.write(jsonData);
+    // request.end();
 
     const options = {
-        method: "POST",
-        auth: "daily:2c92688731400b760684e3760efb912b"
+      hostname: "api.mailjet.com",
+      path: "/v3/REST/contact",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Basic " + Buffer.from(apiKey + ":" + secretKey).toString('base64')
+      }  
     };
-    const request = https.request(url, options, function(response){
-        response.on("data", function(data){
-            console.log(JSON.parse(data));
+
+    const apiRequest = https.request(options, function(response){
+        let responseData = "";
+        response.on("data", function(chunk){
+            responseData += chunk;
+        });
+
+        response.on("end", function(){
+            console.log(responseData);
         });
     });
 
-    request.write(jsonData);
-    request.end();
+    apiRequest.on("error", function(error){
+        console.error(error);
+    });
+
+    apiRequest.write(jsonData);
+    apiRequest.end();
 
 });
 
 app.listen(3000, function(){
     console.log("Server is running on port 3000");
 });
-
-
-
-//api key
-// 2c92688731400b760684e3760efb912b
