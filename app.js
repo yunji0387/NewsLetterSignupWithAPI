@@ -28,22 +28,6 @@ app.post("/", function(req, res){
     };
 
     let jsonData = JSON.stringify(data);
-    // console.log("----------");
-    // console.log(jsonData);
-
-    // const url = "https://api.mailjet.com/v3/REST/contact";
-
-    // const options = {
-    //     method: "POST",
-    //     auth: "daily:2c92688731400b760684e3760efb912b"
-    // };
-    // const request = https.request(url, options, function(response){
-    //     response.on("data", function(data){
-    //         console.log(JSON.parse(data));
-    //     });
-    // });
-    // request.write(jsonData);
-    // request.end();
 
     const options = {
       hostname: "api.mailjet.com",
