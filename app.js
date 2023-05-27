@@ -40,6 +40,13 @@ app.post("/", function(req, res){
     };
 
     const apiRequest = https.request(options, function(response){
+        console.log("Status code: " + response.statusCode);
+        if(response.statusCode === 201){
+            res.sendFile(__dirname + "/success.html");
+        }else{
+            res.sendFile(__dirname + "/failure.html");
+        }
+        
         let responseData = "";
         response.on("data", function(chunk){
             responseData += chunk;
@@ -57,6 +64,10 @@ app.post("/", function(req, res){
     apiRequest.write(jsonData);
     apiRequest.end();
 
+});
+
+app.post("/failure", function(req, res){
+   res.redirect("/"); 
 });
 
 app.listen(3000, function(){
